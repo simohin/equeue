@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     application
@@ -8,6 +7,12 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
 }
+
+group = "simohin"
+version = "${properties["applicationVersion"]}"
+
+tasks.bootJar { enabled = false }
+tasks.jar { enabled = true }
 
 allprojects {
 
@@ -26,9 +31,6 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 
-    group = "simohin"
-    version = "${properties["applicationVersion"]}"
-
     dependencies {
         implementation("org.springframework.boot:spring-boot-starter")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -46,12 +48,4 @@ subprojects {
     tasks.withType<Test> {
         useJUnitPlatform()
     }
-}
-
-tasks.withType<BootJar> {
-    enabled = false
-}
-
-tasks.withType<Jar> {
-    enabled = true
 }
