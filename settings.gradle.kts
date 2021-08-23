@@ -11,12 +11,14 @@ pluginManagement {
         }
     }
 
+    val vaadinVersion: String by settings
     val springBootVersion: String by settings
     val kotlinVersion: String by settings
     val springDependencyManagementVersion: String by settings
 
     plugins {
         application
+        id("com.vaadin") version vaadinVersion apply false
         id("org.springframework.boot") version springBootVersion apply false
         id("io.spring.dependency-management") version springDependencyManagementVersion apply false
         kotlin("jvm") version kotlinVersion apply false
