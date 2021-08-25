@@ -8,6 +8,7 @@ import com.vaadin.flow.component.html.H2
 import com.vaadin.flow.component.orderedlayout.FlexComponent
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.component.page.Push
 import com.vaadin.flow.component.tabs.Tab
 import com.vaadin.flow.component.tabs.Tabs
 import com.vaadin.flow.component.tabs.TabsVariant
@@ -43,7 +44,6 @@ class MainLayout : AppLayout() {
         setSizeFull()
         isPadding = false
         isSpacing = false
-        themeList.set("spacing-s", true)
         alignItems = FlexComponent.Alignment.STRETCH
         add(menu)
     }

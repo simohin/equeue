@@ -25,3 +25,4 @@ pluginManagement {
         kotlin("plugin.spring") version kotlinVersion apply false
     }
 }
+include("board-service")
