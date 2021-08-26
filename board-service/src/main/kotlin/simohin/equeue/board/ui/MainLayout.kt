@@ -3,29 +3,28 @@ package simohin.equeue.board.ui
 import com.vaadin.flow.component.AttachEvent
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.DetachEvent
+import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.html.H1
-import com.vaadin.flow.component.html.Paragraph
 import com.vaadin.flow.component.orderedlayout.FlexComponent
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.page.AppShellConfigurator
 import com.vaadin.flow.component.page.Push
+import com.vaadin.flow.data.provider.ListDataProvider
 import com.vaadin.flow.router.Route
 import com.vaadin.flow.server.PWA
 import reactor.core.Disposable
 import reactor.core.publisher.Flux
-import reactor.core.publisher.UnicastProcessor
+import reactor.core.publisher.Sinks
 import simohin.equeue.board.configuration.QueueConfiguration
 import simohin.equeue.board.model.QueueItem
-import simohin.equeue.board.ui.component.QueueItemsDiv
 import java.time.Duration
 
-@Route
+@Route("")
 @PWA(name = "Electronic queue dashboard application", shortName = "E-queue Board App")
 @Push
 class MainLayout(
-    private val queueItemsProcessor: UnicastProcessor<QueueItem>,
-    private val queueItems: Flux<QueueItem>
+    private val queueItemsFlux: Flux<QueueItem>
 ) : VerticalLayout(),
     AppShellConfigurator {
 
@@ -34,33 +33,33 @@ class MainLayout(
         style["cursor"] = "default"
     }
     private val titleWrapper = createTitleWrapper()
-    private val items = QueueItemsDiv()
+    private val itemsDataProvider = ListDataProvider<QueueItem>(mutableSetOf())
+    private val itemsGrid = Grid(QueueItem::class.java).apply {
+        removeAllColumns()
+        addColumn("value").setHeader("Номер талона")
+        setItems(itemsDataProvider)
+        style["margin"] = "10px"
+    }
     private var subscription: Disposable? = null
 
 
     init {
-        style.set("margin", "0")
-        style.set("padding", "0")
+        style["margin"] = "0"
+        style["padding"] = "0"
+        setSizeFull()
 
         createNavbarContent()
-        add(items)
-        expand(items)
+        add(itemsGrid)
+        expand(itemsGrid)
     }
 
     override fun onAttach(attachEvent: AttachEvent?) {
         super.onAttach(attachEvent)
         if (subscription == null) {
-            subscription = queueItems.subscribe {
-                items.add(Paragraph(it.value))
-            }
-        }
-
-        Flux.generate<QueueItem> { sink ->
-            sink.next(QueueItem("A${QueueConfiguration.nextInt(1000)}"))
-        }.delayElements(Duration.ofSeconds(3)).take(20).subscribe { item ->
-            ui.ifPresent {
-                it.access {
-                    queueItemsProcessor.onNext(item)
+            subscription = queueItemsFlux.subscribe {
+                itemsDataProvider.apply {
+                    items.add(it)
+                    refreshAll()
                 }
             }
         }

@@ -2,7 +2,7 @@ package simohin.equeue.board.configuration
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import reactor.core.publisher.UnicastProcessor
+import reactor.core.publisher.Sinks
 import simohin.equeue.board.model.QueueItem
 import java.util.*
 
@@ -10,10 +10,10 @@ import java.util.*
 class QueueConfiguration {
 
     @Bean
-    fun queueItemsProcessor() = UnicastProcessor.create<QueueItem>()
+    fun queueItemsSink(): Sinks.Many<QueueItem> = Sinks.many().multicast().onBackpressureBuffer()
 
     @Bean
-    fun queueItems(queueItemsProcessor: UnicastProcessor<QueueItem>) = queueItemsProcessor.replay(30).autoConnect()
+    fun queueItemsFlux(queueItemsSink: Sinks.Many<QueueItem>) = queueItemsSink.asFlux()
 
     companion object : Random()
 }
