@@ -1,4 +1,4 @@
-package simohin.equeue.terminal.service
+package simohin.equeue.terminal
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication

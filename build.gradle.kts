@@ -36,8 +36,9 @@ subprojects {
     dependencies {
         implementation("org.springframework.boot:spring-boot-starter-webflux")
         implementation("org.springframework.boot:spring-boot-devtools")
+        implementation("org.springframework.kafka:spring-kafka")
+        implementation("io.projectreactor.kafka:reactor-kafka")
         implementation("com.vaadin:vaadin-spring-boot-starter:${properties["vaadinVersion"]}")
-//        implementation("com.vaadin:vaadin:${properties["vaadinVersion"]}")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
