@@ -1,10 +1,12 @@
 package simohin.equeue.terminal.ui
 
+import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
-import com.vaadin.flow.component.dialog.Dialog
 import com.vaadin.flow.component.html.H3
 import com.vaadin.flow.component.html.Span
+import com.vaadin.flow.component.notification.Notification
+import com.vaadin.flow.component.notification.NotificationVariant
 import com.vaadin.flow.component.orderedlayout.FlexComponent
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.page.AppShellConfigurator
@@ -28,16 +30,6 @@ class MainView(
     private val queueItemEventSendService: QueueItemEventSendService
 ) : VerticalLayout(), AppShellConfigurator {
 
-    private val dialogText = Span(DEFAULT_DIALOG_TEXT)
-    private val dialogTitle = H3(DEFAULT_DIALOG_TITLE)
-    private val dialog: Dialog = Dialog(VerticalLayout(dialogTitle, dialogText)).apply {
-        addDialogCloseActionListener {
-            it.source.close()
-            dialogTitle.text = DEFAULT_DIALOG_TITLE
-            dialogText.text = DEFAULT_DIALOG_TEXT
-        }
-    }
-
     init {
         setSizeFull()
         alignItems = FlexComponent.Alignment.CENTER
@@ -52,19 +44,17 @@ class MainView(
         }
     }
 
-    private fun onQueueItemEventSent(number: String) {
-        dialogTitle.text = SUCCESS_DIALOG_TITLE
-        dialogText.text = number
-    }
+    private fun onQueueItemEventSent(number: String) = showNotification(
+        VerticalLayout(H3(SUCCESS_TITLE), Span(number)), NotificationVariant.LUMO_SUCCESS
+    )
 
-    private fun onQueueItemEventSendFailed() {
-        dialogTitle.text = ERROR_DIALOG_TITLE
-        dialogText.text = ERROR_DIALOG_TEXT
-    }
+    private fun onQueueItemEventSendFailed(string: String? = null) =
+        showNotification(H3(string ?: ERROR_TITLE), NotificationVariant.LUMO_ERROR)
 
     private fun onButtonClick() = queueItemEventSendService.send(Mono.just(prepareEvent())).also {
-        dialog.open()
-        it.subscribe { result ->
+        it.doOnError {
+            doInUi { onQueueItemEventSendFailed() }
+        }.subscribe { result ->
             doInUi {
                 if (result.isSuccess) {
                     onQueueItemEventSent(result.value)
@@ -90,12 +80,17 @@ class MainView(
 
     companion object {
 
-        private const val DEFAULT_DIALOG_TEXT = "Пожалуйста, подождите"
-        private const val ERROR_DIALOG_TEXT = "Простите, что-то пожло не по плану"
-        private const val DEFAULT_DIALOG_TITLE = "Занимаем очередь"
-        private const val SUCCESS_DIALOG_TITLE = "Ваша очередь"
-        private const val ERROR_DIALOG_TITLE = "Не удалось занять очередь"
+        private const val SUCCESS_TITLE = "Ваша очередь"
+        private const val ERROR_TITLE = "Не удалось занять очередь"
         private const val BUTTON_TEXT = "Занять очередь"
+        private const val NOTIFICATION_DURATION = 5000
         private val random = Random
+
+        private fun showNotification(component: Component, variant: NotificationVariant) =
+            Notification(component).apply {
+                position = Notification.Position.MIDDLE
+                duration = NOTIFICATION_DURATION
+                addThemeVariants(variant)
+            }.open()
     }
 }
