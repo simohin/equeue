@@ -15,10 +15,7 @@ import com.vaadin.flow.router.Route
 import com.vaadin.flow.server.PWA
 import reactor.core.Disposable
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Sinks
-import simohin.equeue.board.configuration.QueueConfiguration
-import simohin.equeue.board.model.QueueItem
-import java.time.Duration
+import simohin.equeue.core.lib.model.kafka.QueueItem
 
 @Route("")
 @PWA(name = "Electronic queue dashboard application", shortName = "E-queue Board App")
@@ -57,10 +54,8 @@ class MainLayout(
         super.onAttach(attachEvent)
         if (subscription == null) {
             subscription = queueItemsFlux.subscribe {
-                itemsDataProvider.apply {
-                    items.add(it)
-                    refreshAll()
-                }
+                itemsDataProvider.items.add(it)
+                itemsDataProvider.refreshAll()
             }
         }
     }

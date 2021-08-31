@@ -1,2 +1,8 @@
 server:
   port: 8100
+spring:
+  application:
+    name: "equeue.board"
+  kafka:
+    bootstrap-servers: localhost:29092
+    properties.spring.json.trusted.packages: "simohin.equeue.core.lib.model.kafka.**"

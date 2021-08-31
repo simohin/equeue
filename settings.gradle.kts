@@ -15,14 +15,17 @@ pluginManagement {
     val springBootVersion: String by settings
     val kotlinVersion: String by settings
     val springDependencyManagementVersion: String by settings
+    val protobufPluginVersion: String by settings
 
     plugins {
         application
         id("com.vaadin") version vaadinVersion apply false
         id("org.springframework.boot") version springBootVersion apply false
         id("io.spring.dependency-management") version springDependencyManagementVersion apply false
+        id("com.google.protobuf") version protobufPluginVersion apply false
         kotlin("jvm") version kotlinVersion apply false
         kotlin("plugin.spring") version kotlinVersion apply false
     }
 }
 include("board-service")
+include("core-lib")

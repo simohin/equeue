@@ -41,6 +41,9 @@ subprojects {
         implementation("com.vaadin:vaadin-spring-boot-starter:${properties["vaadinVersion"]}")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+        implementation("io.grpc:grpc-netty-shaded:${properties["grpcVersion"]}")
+        implementation("io.grpc:grpc-protobuf:${properties["grpcVersion"]}")
+        implementation("io.grpc:grpc-stub:${properties["grpcVersion"]}")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
     }
 

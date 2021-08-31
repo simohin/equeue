@@ -3,7 +3,7 @@ package simohin.equeue.board.configuration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import reactor.core.publisher.Sinks
-import simohin.equeue.board.model.QueueItem
+import simohin.equeue.core.lib.model.kafka.QueueItem
 import java.util.*
 
 @Configuration

@@ -37,3 +37,4 @@ out/
 .vscode/
 /core-service/node_modules/
 /board-service/node_modules/
+/core-lib/src/generated/
