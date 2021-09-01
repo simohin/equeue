@@ -13,6 +13,14 @@ message QueueItem {
   string value = 2;
 }
 
+message RegisterQueueItemRequest {
+  UUID id = 1;
+}
+message RegisterQueueItemResponse {
+  bool isSuccess = 1;
+  QueueItem item = 2;
+}
+
 message QueueItemEvent {
   enum Type {
     CREATED = 0;
@@ -25,11 +33,10 @@ message QueueItemEvent {
   QueueItem item = 3;
 }
 
-message QueueItemEventProcessingResult {
+message QueueItemRegistrationResult {
   bool isSuccess = 1;
-  string value = 2;
 }
 
-service QueueItemEventProcessor {
-  rpc Process (QueueItemEvent) returns (QueueItemEventProcessingResult) {}
+service QueueItemRegistrationService {
+  rpc register (RegisterQueueItemRequest) returns (RegisterQueueItemResponse) {}
 }

@@ -4,7 +4,7 @@ import io.grpc.ManagedChannelBuilder
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import simohin.equeue.core.lib.grpc.ReactorQueueItemEventProcessorGrpc
+import simohin.equeue.core.lib.grpc.ReactorQueueItemRegistrationServiceGrpc
 
 @Configuration
 @ConfigurationProperties("services.core")
@@ -15,5 +15,6 @@ class CoreGrpcClientConfiguration {
     private val channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build()
 
     @Bean
-    fun coreGrpcClientStub(): ReactorQueueItemEventProcessorGrpc.ReactorQueueItemEventProcessorStub = ReactorQueueItemEventProcessorGrpc.newReactorStub(channel)
+    fun queueItemRegistrationServiceStub(): ReactorQueueItemRegistrationServiceGrpc.ReactorQueueItemRegistrationServiceStub =
+        ReactorQueueItemRegistrationServiceGrpc.newReactorStub(channel)
 }
