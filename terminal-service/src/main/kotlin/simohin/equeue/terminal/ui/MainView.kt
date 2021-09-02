@@ -1,5 +1,6 @@
 package simohin.equeue.terminal.ui
 
+import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -16,6 +17,7 @@ import com.vaadin.flow.server.Command
 import com.vaadin.flow.server.PWA
 import reactor.core.publisher.Mono
 import simohin.equeue.core.lib.grpc.RegisterQueueItemRequest
+import simohin.equeue.core.lib.grpc.RegisterQueueItemResponse
 import simohin.equeue.core.lib.grpc.UUID
 import simohin.equeue.terminal.integration.core.grpc.service.QueueItemRegistrationService
 import kotlin.random.Random
@@ -27,11 +29,16 @@ class MainView(
     private val queueItemRegistrationService: QueueItemRegistrationService
 ) : VerticalLayout(), AppShellConfigurator {
 
+    private val button = Button(BUTTON_TEXT) { onButtonClick(it) }.apply {
+        addThemeVariants(ButtonVariant.LUMO_PRIMARY)
+        isDisableOnClick = true
+    }
+
     init {
         setSizeFull()
         alignItems = FlexComponent.Alignment.CENTER
         justifyContentMode = FlexComponent.JustifyContentMode.CENTER
-        add(Button(BUTTON_TEXT) { onButtonClick() }.apply { addThemeVariants(ButtonVariant.LUMO_PRIMARY) })
+        add(button)
     }
 
     private fun doInUi(command: Command) = ui.ifPresent { ui ->
@@ -48,7 +55,7 @@ class MainView(
     private fun onQueueItemEventSendFailed(string: String? = null) =
         showNotification(H3(string ?: ERROR_TITLE), NotificationVariant.LUMO_ERROR)
 
-    private fun onButtonClick() =
+    private fun onButtonClick(clickEvent: ClickEvent<Button>): Mono<RegisterQueueItemResponse> =
         queueItemRegistrationService.register(
             Mono.just(
                 RegisterQueueItemRequest.newBuilder()
@@ -66,6 +73,7 @@ class MainView(
                     }
                 }
             }
+            clickEvent.source.isEnabled = true
         }
 
     companion object {
